@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"regexp"
 	"strings"
 )
 
@@ -53,7 +54,7 @@ func extractNgrams(r io.Reader) map[string]int {
 	wordQueue := make([]string, GRAMSIZE)
 
 	for scanner.Scan() {
-		word := scanner.Text()
+		word := scrubWord(scanner.Text())
 		wordQueue = append(wordQueue, word)
 		if len(wordQueue) > GRAMSIZE {
 			wordQueue = wordQueue[1:] // Drop the first element
@@ -65,4 +66,12 @@ func extractNgrams(r io.Reader) map[string]int {
 	}
 
 	return grams
+}
+
+var invalidChars = regexp.MustCompile("[^a-zA-Z0-9]+")
+
+// scrubWord scrubs noise characters (punctuation, etc)
+// and lowercases the input
+func scrubWord(s string) string {
+	return strings.ToLower(invalidChars.ReplaceAllString(s, ""))
 }
