@@ -9,12 +9,27 @@ import (
 	"os"
 	"path"
 	"regexp"
+	"sort"
 	"strings"
 )
 
 const GRAMSIZE = 3
+const TOP_N = 100
 
-var Grams = make(map[string]int)
+var Grams = make(map[string]*NGramFreq)
+var Freqs = make([]*NGramFreq, 0)
+
+// NGramFreq stores an ngram and its frequency
+//
+type NGramFreq struct {
+	Text string
+	Freq int64
+}
+
+// String formats an NGramFreq for console output
+func (n *NGramFreq) String() string {
+	return fmt.Sprintf("%d - %s", n.Freq, n.Text)
+}
 
 func main() {
 	flag.Parse()
@@ -56,6 +71,14 @@ func main() {
 		extractNgrams(os.Stdin)
 	}
 
+	sort.Slice(Freqs, func(i, j int) bool {
+		return Freqs[i].Freq > Freqs[j].Freq
+	})
+
+	for i := 0; i < TOP_N && i < len(Freqs)-1; i++ {
+		fmt.Println(Freqs[i])
+	}
+
 }
 
 // extractNgrams tokenizes the supplied stream and
@@ -76,7 +99,14 @@ func extractNgrams(r io.Reader) {
 		}
 		if len(wordQueue) == GRAMSIZE {
 			phrase := strings.Join(wordQueue, " ")
-			Grams[phrase]++
+
+			if ngf, existed := Grams[phrase]; existed {
+				ngf.Freq++
+			} else {
+				ngf = &NGramFreq{Text: phrase, Freq: 1}
+				Grams[phrase] = ngf
+				Freqs = append(Freqs, ngf)
+			}
 		}
 	}
 }
