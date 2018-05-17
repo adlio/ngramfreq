@@ -116,5 +116,18 @@ var invalidChars = regexp.MustCompile("[^a-zA-Z0-9]+")
 // scrubWord scrubs noise characters (punctuation, etc)
 // and lowercases the input
 func scrubWord(s string) string {
-	return strings.ToLower(invalidChars.ReplaceAllString(s, ""))
+
+	// return strings.ToLower(invalidChars.ReplaceAllString(s, ""))
+	return strings.Map(func(r rune) rune {
+		switch {
+		case r >= 'a' && r <= 'z':
+			return r
+		case r >= 'A' && r <= 'Z':
+			return r + 32
+		case r >= '0' && r <= '9':
+			return r
+		default:
+			return -1
+		}
+	}, s)
 }
