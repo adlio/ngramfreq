@@ -14,6 +14,8 @@ import (
 
 const GRAMSIZE = 3
 
+var Grams = make(map[string]int)
+
 func main() {
 	flag.Parse()
 
@@ -44,9 +46,7 @@ func main() {
 // extractNgrams tokenizes the supplied stream and
 // extracts each unique n-gram into a map relating
 // the n-gram to its frequency
-func extractNgrams(r io.Reader) map[string]int {
-
-	grams := make(map[string]int)
+func extractNgrams(r io.Reader) {
 
 	scanner := bufio.NewScanner(r)
 	scanner.Split(bufio.ScanWords)
@@ -61,11 +61,9 @@ func extractNgrams(r io.Reader) map[string]int {
 		}
 		if len(wordQueue) == GRAMSIZE {
 			phrase := strings.Join(wordQueue, " ")
-			grams[phrase]++
+			Grams[phrase]++
 		}
 	}
-
-	return grams
 }
 
 var invalidChars = regexp.MustCompile("[^a-zA-Z0-9]+")
