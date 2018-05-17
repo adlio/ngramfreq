@@ -1,4 +1,11 @@
-# Stackery.io Coding Exercise - adlio
+> Stackery.io Coding Exercise - adlio
+# ngramfreq
+
+This program calculates the most frequently occuring [n-grams](https://en.wikipedia.org/wiki/N-gram) in text files supplied as command line arguments or via standard input.
+
+Usage:
+
+		ngramfreq file1.txt file2.txt
 
 ## Program Requirements
 
