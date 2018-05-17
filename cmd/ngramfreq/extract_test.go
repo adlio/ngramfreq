@@ -5,6 +5,15 @@ import (
 	"testing"
 )
 
+func TestEmptyString(t *testing.T) {
+	r := strings.NewReader("")
+	results := extractNgrams(r)
+
+	if len(results) != 0 {
+		t.Error("An empty string shouldn't have any ngrams in it.")
+	}
+}
+
 func Test3WordString(t *testing.T) {
 	r := strings.NewReader("my first trigram")
 	results := extractNgrams(r)
