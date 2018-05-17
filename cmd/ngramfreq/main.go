@@ -41,6 +41,21 @@ func main() {
 	}
 
 	fmt.Printf("Processing %d files: %v. StdIn: %v\n", len(filenames), filenames, haveStdIn)
+
+	for _, filename := range filenames {
+		f, err := os.Open(filename)
+		if err != nil {
+			panic(err)
+		}
+		defer f.Close()
+		extractNgrams(f)
+		f.Close()
+	}
+
+	if haveStdIn {
+		extractNgrams(os.Stdin)
+	}
+
 }
 
 // extractNgrams tokenizes the supplied stream and
