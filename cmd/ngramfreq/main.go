@@ -1,12 +1,17 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"path"
+	"strings"
 )
+
+const GRAMSIZE = 3
 
 func main() {
 	flag.Parse()
@@ -33,4 +38,31 @@ func main() {
 	}
 
 	fmt.Printf("Processing %d files: %v. StdIn: %v\n", len(filenames), filenames, haveStdIn)
+}
+
+// extractNgrams tokenizes the supplied stream and
+// extracts each unique n-gram into a map relating
+// the n-gram to its frequency
+func extractNgrams(r io.Reader) map[string]int {
+
+	grams := make(map[string]int)
+
+	scanner := bufio.NewScanner(r)
+	scanner.Split(bufio.ScanWords)
+
+	wordQueue := make([]string, GRAMSIZE)
+
+	for scanner.Scan() {
+		word := scanner.Text()
+		wordQueue = append(wordQueue, word)
+		if len(wordQueue) > GRAMSIZE {
+			wordQueue = wordQueue[1:] // Drop the first element
+		}
+		if len(wordQueue) == GRAMSIZE {
+			phrase := strings.Join(wordQueue, " ")
+			grams[phrase]++
+		}
+	}
+
+	return grams
 }
