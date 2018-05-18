@@ -29,18 +29,6 @@ var Grams = make(map[string]*NGramFreq)
 // it can be sorted for scoring
 var Freqs = make([]*NGramFreq, 0)
 
-// NGramFreq stores an ngram and its frequency.
-//
-type NGramFreq struct {
-	Text string
-	Freq int64
-}
-
-// String formats an NGramFreq for console output
-func (n *NGramFreq) String() string {
-	return fmt.Sprintf("%d - %s", n.Freq, n.Text)
-}
-
 // main is the entry point for the application
 func main() {
 
