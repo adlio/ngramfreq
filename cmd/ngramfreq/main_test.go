@@ -5,6 +5,17 @@ import (
 	"testing"
 )
 
+func TestArgParsingWithNoFiles(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"ngramfreq"}
+
+	_, _, err := processArgs()
+	if err == nil {
+		t.Errorf("Providing neither files nor Stdin should produce an error")
+	}
+}
+
 func TestArgParsingWithFakeFile(t *testing.T) {
 	oldArgs := os.Args
 	defer func() { os.Args = oldArgs }()
