@@ -112,10 +112,16 @@ func extractNgrams(r io.Reader) {
 	scanner := bufio.NewScanner(r)
 	scanner.Split(bufio.ScanWords)
 
-	wordQueue := make([]string, GramSize)
+	wordQueue := make([]string, 0)
 
 	for scanner.Scan() {
-		word := scrubWord(scanner.Text())
+		word := ScrubWord(scanner.Text())
+
+		// Skip words which scrubbing caused to be empty
+		if word == "" {
+			continue
+		}
+
 		wordQueue = append(wordQueue, word)
 		if len(wordQueue) > GramSize {
 			wordQueue = wordQueue[1:] // Drop the first element
@@ -134,9 +140,9 @@ func extractNgrams(r io.Reader) {
 	}
 }
 
-// scrubWord scrubs noise characters (punctuation, etc)
+// ScrubWord scrubs noise characters (punctuation, etc)
 // and lowercases the input
-func scrubWord(s string) string {
+func ScrubWord(s string) string {
 
 	// return strings.ToLower(invalidChars.ReplaceAllString(s, ""))
 	return strings.Map(func(r rune) rune {

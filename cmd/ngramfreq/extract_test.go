@@ -33,6 +33,27 @@ func Test3WordString(t *testing.T) {
 	if ngf.Freq != 1 {
 		t.Errorf("Expected 'my first trigram' freq of 1. Got %d", ngf.Freq)
 	}
+
+	_, found := Grams["  my"]
+	if found {
+		t.Errorf("Grams contained something that wasn't a trigram.")
+	}
+}
+
+func TestPunctuationOnlyString(t *testing.T) {
+	Grams = make(map[string]*NGramFreq)
+	r := strings.NewReader("lorem ipsum dolor ... --- ... --- ... --- ... ---")
+	extractNgrams(r)
+
+	ngf, _ := Grams["lorem ipsum dolor"]
+	if ngf.Freq != 1 {
+		t.Errorf("Incorrect .Freq on 'lorem ipsum dolor': %d", ngf.Freq)
+	}
+
+	ngf, found := Grams["  "]
+	if found {
+		t.Errorf("All-spaces n-gram found '%s'", ngf)
+	}
 }
 
 func TestPunctuationCleanup(t *testing.T) {
@@ -57,14 +78,14 @@ func TestPunctuationCleanup(t *testing.T) {
 }
 
 func TestScrubWhenClean(t *testing.T) {
-	s := scrubWord("cleanword")
+	s := ScrubWord("cleanword")
 	if s != "cleanword" {
 		t.Errorf("Didn't need scrubbing, but changed to '%s'", s)
 	}
 }
 
 func TestScrubWordLowerCasing(t *testing.T) {
-	s := scrubWord("CleanWord")
+	s := ScrubWord("CleanWord")
 	if s != "cleanword" {
 		t.Errorf("Expected 'cleanword', got '%s'.", s)
 	}
