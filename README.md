@@ -41,16 +41,16 @@ You'll want to check the project out in your `$GOPATH`.
 
 Tests should be run from the `cmd/ngramfreq` directory:
 
-			cd cmd/ngramfreq
-			go test
+    cd cmd/ngramfreq
+    go test
 
 ### Compiling and Running
 
 Compile and run the app from the `cmd/ngramfreq` directory:
 
-			cd cmd/ngramfreq
-			go build
-			./ngramfreq file1.txt
+    cd cmd/ngramfreq
+    go build
+    ./ngramfreq file1.txt
 
 ### Architecture Decision Record (ADR)
 
@@ -63,11 +63,11 @@ This project's architectural decisions are being tracked in Markdown files in th
 Below are the original requirements for this project:
 
 1. The program can be written in any language but should be easy to run.
-2.It should accept as arguments a list of one or more file paths (e.g. ./solution file1.txt file2.txt ...). The program also accepts input on stdin (e.g. cat file1.txt | ./solution).
+2. It should accept as arguments a list of one or more file paths (e.g. ./solution file1.txt file2.txt ...). The program also accepts input on stdin (e.g. cat file1.txt | ./solution).
 3. The program outputs a list of the 100 most common three word sequences in the text, along with a count of how many times each occurred in the text.
 
 	For example:
-	
+
 		231 - i will not
 		116 - i do not
 		105 - there is no
