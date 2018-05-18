@@ -50,7 +50,7 @@ Compile and run the app from the `cmd/ngramfreq` directory:
 
     cd cmd/ngramfreq
     go build
-    ./ngramfreq file1.txt
+    ./ngramfreq ./testdata/sonnets.txt
 
 ### Architecture Decision Record (ADR)
 
