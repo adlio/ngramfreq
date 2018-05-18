@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 	"path"
-	"strings"
 )
 
 // GramSize is the target length of word
@@ -35,25 +34,6 @@ func main() {
 	}
 	scanner.Score()
 	scanner.WriteTopN(OutputSize, os.Stdout)
-}
-
-// ScrubWord scrubs noise characters (punctuation, etc)
-// and lowercases the input
-func ScrubWord(s string) string {
-
-	// return strings.ToLower(invalidChars.ReplaceAllString(s, ""))
-	return strings.Map(func(r rune) rune {
-		switch {
-		case r >= 'a' && r <= 'z':
-			return r
-		case r >= 'A' && r <= 'Z':
-			return r + 32
-		case r >= '0' && r <= '9':
-			return r
-		default:
-			return -1
-		}
-	}, s)
 }
 
 func processArgs() (haveStdin bool, filenames []string, err error) {
