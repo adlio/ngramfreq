@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
 	"io"
@@ -96,36 +95,10 @@ func processFile(filename string) {
 // extracts each unique n-gram into a map relating
 // the n-gram to its frequency
 func extractNgrams(r io.Reader) {
-
-	scanner := bufio.NewScanner(r)
-	scanner.Split(bufio.ScanWords)
-
-	wordQueue := make([]string, 0)
-
-	for scanner.Scan() {
-		word := ScrubWord(scanner.Text())
-
-		// Skip words which scrubbing caused to be empty
-		if word == "" {
-			continue
-		}
-
-		wordQueue = append(wordQueue, word)
-		if len(wordQueue) > GramSize {
-			wordQueue = wordQueue[1:] // Drop the first element
-		}
-		if len(wordQueue) == GramSize {
-			phrase := strings.Join(wordQueue, " ")
-
-			if ngf, existed := Grams[phrase]; existed {
-				ngf.Freq++
-			} else {
-				ngf = &NGramFreq{Text: phrase, Freq: 1}
-				Grams[phrase] = ngf
-				Freqs = append(Freqs, ngf)
-			}
-		}
-	}
+	scanner := NewScanner(GramSize)
+	scanner.Scan(r)
+	Grams = scanner.Grams
+	Freqs = scanner.Freqs
 }
 
 // ScrubWord scrubs noise characters (punctuation, etc)
