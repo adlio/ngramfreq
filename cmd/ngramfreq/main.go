@@ -63,7 +63,7 @@ func processArgs() (haveStdin bool, filenames []string, err error) {
 	}
 
 	if len(filenames) == 0 && !haveStdin {
-		err = fmt.Errorf("Either a filename or standard input is required.")
+		err = fmt.Errorf("Either a filename or standard input is required")
 	}
 
 	return
