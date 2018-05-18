@@ -7,19 +7,19 @@ This program calculates the most frequently occuring [n-grams](https://en.wikipe
 
 Command line arguments:
 
-		ngramfreq file1.txt file2.txt
+    ngramfreq file1.txt file2.txt
 
 Standard input and command line args combined:
 
-		cat first.txt | ngramfreq second.txt
+    cat first.txt | ngramfreq second.txt
 
 Search for bigrams instead of trigrams:
 
-		ngramfreq -s 2 file1.txt
+    ngramfreq -s 2 file1.txt
 
 Output the top 10 instead of the top 100:
 
-		ngramfreq -n 10 file1.txt
+    ngramfreq -n 10 file1.txt
 
 ## Developer Setup Guide
 
