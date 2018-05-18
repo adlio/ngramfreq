@@ -33,9 +33,9 @@ This application is written in Go, using only the Go standard library. Follow th
 
 You'll want to check the project out in your `$GOPATH`.
 
-		mkdir -p $GOPATH/src/github.com/samg
-		git clone git@github.com:samg/adlio-coding-exercise
-		cd adlio-coding-exercise
+    mkdir -p $GOPATH/src/github.com/samg
+    git clone git@github.com:samg/adlio-coding-exercise
+    cd adlio-coding-exercise
 
 ### Running Tests
 
