@@ -13,10 +13,15 @@ import (
 	"strings"
 )
 
-const GRAMSIZE = 3
-const TOP_N = 100
+var GramSize = 3
+var OutputSize = 100
 
+// Grams maps all encountered n-grams to their
+// frequencies
 var Grams = make(map[string]*NGramFreq)
+
+// Freqs stores every encountered n-gram so that
+// it can be sorted for scoring
 var Freqs = make([]*NGramFreq, 0)
 
 // NGramFreq stores an ngram and its frequency
@@ -32,6 +37,9 @@ func (n *NGramFreq) String() string {
 }
 
 func main() {
+
+	flag.IntVar(&GramSize, "s", 3, "sequence size (2 = bigrams, 3=trigrams). default: 3")
+	flag.IntVar(&OutputSize, "n", 100, "number of n-grams to output. default: 100")
 	flag.Parse()
 
 	// Get filenames from arguments
@@ -55,16 +63,12 @@ func main() {
 		haveStdIn = true
 	}
 
-	fmt.Printf("Processing %d files: %v. StdIn: %v\n", len(filenames), filenames, haveStdIn)
+	if len(filenames) == 0 && !haveStdIn {
+		invalidArgs()
+	}
 
 	for _, filename := range filenames {
-		f, err := os.Open(filename)
-		if err != nil {
-			panic(err)
-		}
-		defer f.Close()
-		extractNgrams(f)
-		f.Close()
+		processFile(filename)
 	}
 
 	if haveStdIn {
@@ -75,10 +79,23 @@ func main() {
 		return Freqs[i].Freq > Freqs[j].Freq
 	})
 
-	for i := 0; i < TOP_N && i < len(Freqs)-1; i++ {
+	for i := 0; i < OutputSize && i < len(Freqs)-1; i++ {
 		fmt.Println(Freqs[i])
 	}
 
+}
+
+// processFile extracts all n-grams from the
+// supplied file
+//
+// TODO Add readability checking
+func processFile(filename string) {
+	f, err := os.Open(filename)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	extractNgrams(f)
 }
 
 // extractNgrams tokenizes the supplied stream and
@@ -89,15 +106,15 @@ func extractNgrams(r io.Reader) {
 	scanner := bufio.NewScanner(r)
 	scanner.Split(bufio.ScanWords)
 
-	wordQueue := make([]string, GRAMSIZE)
+	wordQueue := make([]string, GramSize)
 
 	for scanner.Scan() {
 		word := scrubWord(scanner.Text())
 		wordQueue = append(wordQueue, word)
-		if len(wordQueue) > GRAMSIZE {
+		if len(wordQueue) > GramSize {
 			wordQueue = wordQueue[1:] // Drop the first element
 		}
-		if len(wordQueue) == GRAMSIZE {
+		if len(wordQueue) == GramSize {
 			phrase := strings.Join(wordQueue, " ")
 
 			if ngf, existed := Grams[phrase]; existed {
@@ -130,4 +147,10 @@ func scrubWord(s string) string {
 			return -1
 		}
 	}, s)
+}
+
+func invalidArgs() {
+	fmt.Printf("Usage: %s [option flags] file1.txt file2.txt\n", os.Args[0])
+	flag.PrintDefaults()
+	os.Exit(1)
 }
