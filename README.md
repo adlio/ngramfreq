@@ -5,19 +5,37 @@ This program calculates the most frequently occuring [n-grams](https://en.wikipe
 
 ### Usage Examples
 
+Command line arguments:
+
 		ngramfreq file1.txt file2.txt
-		
+
+Standard input and command line args combined:
+
 		cat first.txt | ngramfreq second.txt
+
+Search for bigrams instead of trigrams:
+
+		ngramfreq -s 2 file1.txt
+
+Output the top 10 instead of the top 100:
+
+		ngramfreq -n 10 file1.txt
 
 ## Developer Setup Guide
 
-This application is written entirely in Go, using only the Go standard library. Follow the [Go install guide](https://golang.org/doc/install#install) appropriate for your OS.
+This application is written in Go, using only the Go standard library. Follow the [Go install guide](https://golang.org/doc/install#install) appropriate for your OS.
 
 **Prerequisites**:
 
 * Go (1.8+)
 
-This repository is organized according to the [golang-standards/project-layout](https://github.com/golang-standards/project-layout)—which suggests programs be housed within subdirectories of the [cmd/](./cmd/) directory.
+### Cloning the Project
+
+You'll want to check the project out in your `$GOPATH`.
+
+		mkdir -p $GOPATH/src/github.com/samg
+		git clone git@github.com:samg/adlio-coding-exercise
+		cd adlio-coding-exercise
 
 ### Running Tests
 
@@ -34,8 +52,15 @@ Compile and run the app from the `cmd/ngramfreq` directory:
 			go build
 			./ngramfreq file1.txt
 
+### Architecture Decision Record (ADR)
 
-## Program Requirements
+This project's architectural decisions are being tracked in Markdown files in the [adr](./adr) directory.
+
+----
+
+## Application Requirements
+
+Below are the original requirements for this project:
 
 1. The program can be written in any language but should be easy to run.
 2.It should accept as arguments a list of one or more file paths (e.g. ./solution file1.txt file2.txt ...). The program also accepts input on stdin (e.g. cat file1.txt | ./solution).
