@@ -8,12 +8,17 @@ import (
 	"log"
 	"os"
 	"path"
-	"regexp"
 	"sort"
 	"strings"
 )
 
+// GramSize is the target length of word
+// sequences (i.e. 3 means we search for
+// trigrams)
 var GramSize = 3
+
+// OutputSize is the number of n-grams to
+// output
 var OutputSize = 100
 
 // Grams maps all encountered n-grams to their
@@ -24,7 +29,7 @@ var Grams = make(map[string]*NGramFreq)
 // it can be sorted for scoring
 var Freqs = make([]*NGramFreq, 0)
 
-// NGramFreq stores an ngram and its frequency
+// NGramFreq stores an ngram and its frequency.
 //
 type NGramFreq struct {
 	Text string
@@ -36,10 +41,11 @@ func (n *NGramFreq) String() string {
 	return fmt.Sprintf("%d - %s", n.Freq, n.Text)
 }
 
+// main is the entry point for the application
 func main() {
 
-	flag.IntVar(&GramSize, "s", 3, "sequence size (2 = bigrams, 3=trigrams). default: 3")
-	flag.IntVar(&OutputSize, "n", 100, "number of n-grams to output. default: 100")
+	flag.IntVar(&GramSize, "s", 3, "sequence size (2 = bigrams, 3=trigrams)")
+	flag.IntVar(&OutputSize, "n", 100, "number of n-grams to output")
 	flag.Parse()
 
 	// Get filenames from arguments
@@ -127,8 +133,6 @@ func extractNgrams(r io.Reader) {
 		}
 	}
 }
-
-var invalidChars = regexp.MustCompile("[^a-zA-Z0-9]+")
 
 // scrubWord scrubs noise characters (punctuation, etc)
 // and lowercases the input

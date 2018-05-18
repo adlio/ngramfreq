@@ -1,11 +1,39 @@
 > Stackery.io Coding Exercise - adlio
 # ngramfreq
 
-This program calculates the most frequently occuring [n-grams](https://en.wikipedia.org/wiki/N-gram) in text files supplied as command line arguments or via standard input.
+This program calculates the most frequently occuring [n-grams](https://en.wikipedia.org/wiki/N-gram) in text files supplied as command line arguments or via standard input. By default it looks for *3*-word sequences and outputs the *100* most common found.
 
-Usage:
+### Usage Examples
 
 		ngramfreq file1.txt file2.txt
+		
+		cat first.txt | ngramfreq second.txt
+
+## Developer Setup Guide
+
+This application is written entirely in Go, using only the Go standard library. Follow the [Go install guide](https://golang.org/doc/install#install) appropriate for your OS.
+
+**Prerequisites**:
+
+* Go (1.8+)
+
+This repository is organized according to the [golang-standards/project-layout](https://github.com/golang-standards/project-layout)—which suggests programs be housed within subdirectories of the [cmd/](./cmd/) directory.
+
+### Running Tests
+
+Tests should be run from the `cmd/ngramfreq` directory:
+
+			cd cmd/ngramfreq
+			go test
+
+### Compiling and Running
+
+Compile and run the app from the `cmd/ngramfreq` directory:
+
+			cd cmd/ngramfreq
+			go build
+			./ngramfreq file1.txt
+
 
 ## Program Requirements
 
