@@ -2,7 +2,10 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"io"
+	"os"
+	"sort"
 	"strings"
 )
 
@@ -18,6 +21,16 @@ func NewScanner(gramSize int) *Scanner {
 		Grams:    make(map[string]*NGramFreq),
 		Freqs:    make([]*NGramFreq, 0),
 	}
+}
+
+func (s *Scanner) ScanFile(filename string) error {
+	f, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	s.Scan(f)
+	return nil
 }
 
 func (s *Scanner) Scan(r io.Reader) {
@@ -49,5 +62,17 @@ func (s *Scanner) Scan(r io.Reader) {
 				s.Freqs = append(s.Freqs, ngf)
 			}
 		}
+	}
+}
+
+func (s *Scanner) Score() {
+	sort.Slice(s.Freqs, func(i, j int) bool {
+		return s.Freqs[i].Freq > s.Freqs[j].Freq
+	})
+}
+
+func (s *Scanner) WriteTopN(n int, w io.Writer) {
+	for i := 0; i < n && i < len(s.Freqs); i++ {
+		fmt.Fprintln(w, s.Freqs[i])
 	}
 }

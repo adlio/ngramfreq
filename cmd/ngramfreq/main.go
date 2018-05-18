@@ -3,11 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io"
 	"log"
 	"os"
 	"path"
-	"sort"
 	"strings"
 )
 
@@ -19,14 +17,6 @@ var GramSize = 3
 // OutputSize is the number of n-grams to
 // output
 var OutputSize = 100
-
-// Grams maps all encountered n-grams to their
-// frequencies
-var Grams = make(map[string]*NGramFreq)
-
-// Freqs stores every encountered n-gram so that
-// it can be sorted for scoring
-var Freqs = make([]*NGramFreq, 0)
 
 // main is the entry point for the application
 func main() {
@@ -60,45 +50,18 @@ func main() {
 		invalidArgs()
 	}
 
+	scanner := NewScanner(GramSize)
+
 	for _, filename := range filenames {
-		processFile(filename)
+		scanner.ScanFile(filename)
 	}
 
 	if haveStdIn {
-		extractNgrams(os.Stdin)
+		scanner.Scan(os.Stdin)
 	}
 
-	sort.Slice(Freqs, func(i, j int) bool {
-		return Freqs[i].Freq > Freqs[j].Freq
-	})
-
-	for i := 0; i < OutputSize && i < len(Freqs)-1; i++ {
-		fmt.Println(Freqs[i])
-	}
-
-}
-
-// processFile extracts all n-grams from the
-// supplied file
-//
-// TODO Add readability checking
-func processFile(filename string) {
-	f, err := os.Open(filename)
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-	extractNgrams(f)
-}
-
-// extractNgrams tokenizes the supplied stream and
-// extracts each unique n-gram into a map relating
-// the n-gram to its frequency
-func extractNgrams(r io.Reader) {
-	scanner := NewScanner(GramSize)
-	scanner.Scan(r)
-	Grams = scanner.Grams
-	Freqs = scanner.Freqs
+	scanner.Score()
+	scanner.WriteTopN(OutputSize, os.Stdout)
 }
 
 // ScrubWord scrubs noise characters (punctuation, etc)

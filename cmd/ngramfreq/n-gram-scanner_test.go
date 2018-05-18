@@ -6,49 +6,49 @@ import (
 )
 
 func TestEmptyString(t *testing.T) {
-	Grams = make(map[string]*NGramFreq)
+	s := NewScanner(3)
 	r := strings.NewReader("")
-	extractNgrams(r)
+	s.Scan(r)
 
-	if len(Grams) != 0 {
+	if len(s.Grams) != 0 {
 		t.Error("An empty string shouldn't have any ngrams in it.")
 	}
 }
 
 func Test3WordString(t *testing.T) {
-	Grams = make(map[string]*NGramFreq)
+	s := NewScanner(3)
 	r := strings.NewReader("my first trigram")
-	extractNgrams(r)
+	s.Scan(r)
 
-	ngf, _ := Grams["my first trigram"]
+	ngf, _ := s.Grams["my first trigram"]
 	if ngf.Freq != 1 {
 		t.Errorf("Expected 'my first trigram' freq of 1. Got %d", ngf.Freq)
 	}
 
-	_, found := Grams["  my"]
+	_, found := s.Grams["  my"]
 	if found {
 		t.Errorf("Grams contained something that wasn't a trigram.")
 	}
 }
 
 func TestPunctuationOnlyString(t *testing.T) {
-	Grams = make(map[string]*NGramFreq)
+	s := NewScanner(3)
 	r := strings.NewReader("lorem ipsum dolor ... --- ... --- ... --- ... ---")
-	extractNgrams(r)
+	s.Scan(r)
 
-	ngf, _ := Grams["lorem ipsum dolor"]
+	ngf, _ := s.Grams["lorem ipsum dolor"]
 	if ngf.Freq != 1 {
 		t.Errorf("Incorrect .Freq on 'lorem ipsum dolor': %d", ngf.Freq)
 	}
 
-	ngf, found := Grams["  "]
+	ngf, found := s.Grams["  "]
 	if found {
 		t.Errorf("All-spaces n-gram found '%s'", ngf)
 	}
 }
 
 func TestPunctuationCleanup(t *testing.T) {
-	Grams = make(map[string]*NGramFreq)
+	s := NewScanner(3)
 	r := strings.NewReader(`
 			I love
 			sandwiches. Very much.
@@ -56,10 +56,9 @@ func TestPunctuationCleanup(t *testing.T) {
 			I love sandwiches. (I LOVE SANDWICHES!!).
 			East Side Deli makes the best sandwiches with love.
 			`)
+	s.Scan(r)
 
-	extractNgrams(r)
-
-	ngf, ok := Grams["i love sandwiches"]
+	ngf, ok := s.Grams["i love sandwiches"]
 	if ok != true {
 		t.Fatal("Should have found an ngram for 'i love sandwiches'")
 	}
