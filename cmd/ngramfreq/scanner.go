@@ -7,6 +7,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"unicode"
 )
 
 // Scanner provides functionality to scan and count
@@ -104,18 +105,14 @@ func (s *Scanner) WriteTopN(n int, w io.Writer) {
 // ScrubWord scrubs noise characters (punctuation, etc)
 // and lowercases the input
 func ScrubWord(s string) string {
-
-	// return strings.ToLower(invalidChars.ReplaceAllString(s, ""))
 	return strings.Map(func(r rune) rune {
 		switch {
-		case r >= 'a' && r <= 'z':
-			return r
-		case r >= 'A' && r <= 'Z':
-			return r + 32
-		case r >= '0' && r <= '9':
-			return r
-		default:
+		case unicode.IsPunct(r):
 			return -1
+		case unicode.IsUpper(r):
+			return unicode.ToLower(r)
+		default:
+			return r
 		}
 	}, s)
 }
